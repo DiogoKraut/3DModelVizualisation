@@ -10,11 +10,12 @@
 #define MAX_FACES 69451 * 2
 #define MAX_VERTIXES 34834 * 2
 
-typedef strct sVertex {
+#define MAX_FILE 30
+
+typedef struct sVertex {
 	float pos[DIMENSION];
 } tVertex;
 
 typedef struct sFace {
 	int vx[FACE_SIZE];
 } tFace;
-

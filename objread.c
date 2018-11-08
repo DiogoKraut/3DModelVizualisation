@@ -1,15 +1,17 @@
 /* DIOGO PARIS KRAUT - GRR20166365 */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "datatypes.h"
 #include "objread.h"
 
 void readOBJ(FILE *in, tVertex *vertex_list, tFace *face_list) {
-	int vi, fi, i;
+	int vi, fi, i, aux;
 	vi = fi = 0; // Indice da lista de vertices e faces
-	
-	char *s = malloc(MAX_READ_SIZE);
+
+	char s[MAX_READ_SIZE];
 	fgets(s, MAX_READ_SIZE, in);
 
 	while(s != NULL) {
@@ -17,19 +19,21 @@ void readOBJ(FILE *in, tVertex *vertex_list, tFace *face_list) {
 
 		/* Verifica se a substring eh vertice ou face */
 		switch(*s) {
-			case 'v':     // Vertice
+			/* Vertice */
+			case 'v':
 				/* Ler as coordenadas do vertice */
 				for(i = 0; i < DIMENSION; i++) {
 					strtok(NULL, " ");
-					vertex_list[vi]->pox[i] = atof(s);
+					vertex_list[vi].pos[i] = atof(s);
 				}
 				vi++;
 				break;
-
-			case 'f':     // Face
+			/* Face */
+			case 'f':
 				/* Ler os vertices da face */
 				for(i = 0; strtok(NULL, " ") != NULL; i++) {
-					face_list[fi].vx[i] = atoi(s);
+					aux = atoi(s) - 1; // Lista de vertices comeca em 1
+					face_list[fi].vx[i] = aux;
 				}
 				fi++;
 				break;

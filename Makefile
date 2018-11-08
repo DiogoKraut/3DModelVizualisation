@@ -1,4 +1,4 @@
-TARGET = busca
+TARGET = wireframe
 LIBS = -lm
 CC = gcc
 CFLAGS = -Wall -g
