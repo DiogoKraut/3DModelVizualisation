@@ -7,14 +7,11 @@
 #include "datatypes.h"
 #include "objread.h"
 
-void readOBJ(FILE *in, tVertex *vertex_list, tFace *face_list) {
-	int vi, fi, i, aux;
-	vi = fi = 0; // Indice da lista de vertices e faces
+void readOBJ(FILE *in, tVertexList *vl, tFaceList *fl) {
+	int i, aux;
+	char *s = NULL;
 
-	char s[MAX_READ_SIZE];
-	fgets(s, MAX_READ_SIZE, in);
-
-	while(s != NULL) {
+	while(getline(&s, 0, in)) {
 		strtok(s, " "); // Seleciona substring antes do primeiro ' '
 
 		/* Verifica se a substring eh vertice ou face */
@@ -24,20 +21,19 @@ void readOBJ(FILE *in, tVertex *vertex_list, tFace *face_list) {
 				/* Ler as coordenadas do vertice */
 				for(i = 0; i < DIMENSION; i++) {
 					strtok(NULL, " ");
-					vertex_list[vi].pos[i] = atof(s);
+					vl->vertex[vl->size][i] = atof(s);
 				}
-				vi++;
+				vl->size++;
 				break;
 			/* Face */
 			case 'f':
 				/* Ler os vertices da face */
 				for(i = 0; strtok(NULL, " ") != NULL; i++) {
 					aux = atoi(s) - 1; // Lista de vertices comeca em 1
-					face_list[fi].vx[i] = aux;
+					fl->face[fl->size][i] = aux;
 				}
-				fi++;
+				fl->size++;
 				break;
 		}
-		fgets(s, MAX_READ_SIZE, in);
 	}
 }

@@ -2,4 +2,4 @@
 
 #define MAX_READ_SIZE 200
 
-void readOBJ(FILE *in, tVertex *vertex_list, tFace *face_list);
+void readOBJ(FILE *in, tVertexList *vl, tFaceList *fl);

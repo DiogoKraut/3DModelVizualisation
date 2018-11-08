@@ -5,3 +5,5 @@
 #include <stdlib.h>
 
 #include "datatypes.h"
+
+void convertToPerspective(int *camera, tVertexList *vl);

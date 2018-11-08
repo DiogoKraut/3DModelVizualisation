@@ -4,4 +4,4 @@
 #include "datatypes.h"
 
 #define WIN_HEIGHT 800
-#define WIN_LEGNTH 600
+#define WIN_WIDTH 600

@@ -8,15 +8,19 @@
 #define Z 2
 
 #define MAX_FACES 69451 * 2
-#define MAX_VERTIXES 34834 * 2
+#define MAX_VERTEX 34834 * 2
 
 #define MAX_FILE 30
 
-#define tVertex
-typedef struct sVertex {
-	float pos[DIMENSION];
-} tVertex;
+typedef float tVertex[DIMENSION];
+typedef int tFace[FACE_SIZE];
 
-typedef struct sFace {
-	int vx[FACE_SIZE];
-} tFace;
+typedef struct sVertexList {
+	tVertex vertex[MAX_VERTEX];
+	int size;	
+} tVertexList;
+
+typedef struct sFaceList {
+	tFace face[MAX_FACES];
+	int size;
+} tFaceList;

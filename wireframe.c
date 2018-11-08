@@ -19,15 +19,16 @@ int main(int argc, char const *argv[])
 	else
 		file_path = argv[argc];
 
-	tVertex *vertex_list = malloc(sizeof(tVertex) * MAX_VERTIXES);
-	tFace *face_list     = malloc(sizeof(tFace) * MAX_FACES);
+	tVertexList *vl = init_VertexList()
+	tFaceList   *fl = malloc(sizeof(tFaceList));
 	if(!vertex_list || !face_list) {
 		fprintf(stderr, "Falha ao alocar espaco para OBJ\n");
 		exit(EXIT_FAILURE);
-	}
+
+	vl->tam = fl->tam = 0;
 
 	FILE *in = fopen(file_path, "r");
-	readOBJ(in, vertex_list, face_list);
+	readOBJ(in, vl, fl);
 	fclose(in);
 
 	int camera[DIMENSION];
@@ -35,7 +36,7 @@ int main(int argc, char const *argv[])
 	camera[Y] = 0;
 	camera[Z] = 10;
 
-	convertToPerspective(camera, vertex_list);
+	convertToPerspective(camera, vl);
 
 
 	return 0;

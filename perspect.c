@@ -9,8 +9,56 @@
 
 #include "datatypes.h"
 #include "perspect.h"
+#include "graphics.h"
 
 
-void convertToPerspective(int *camera, tVertex *vertex_list) {
-	
+void convertToPerspective(int *camera, tVertexList *vl) {
+	int i;
+	float aux;
+	for(i = 0; i < vl->size; i++) {
+		aux = vl->vertex[i][Z] + camera[Z]; // (Zv + Zc)
+		vl->vertex[i][X] = camera[X] + camera[Z] * ((vl->vertex[i][X] - camera[X]) / aux);
+		vl->vertex[i][Y] = camera[Y] + camera[Z] * ((vl->vertex[i][Y] - camera[Y]) / aux);
+	}	
+}
+
+void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
+	int i;
+	*max = *min = 0;
+
+	for(i = 0; i < vl->size; i++) {
+		if(vl[i].vertex[coord] > *max)
+			*max = vl[i].vertex[coord]
+		else if(vl[i].vertex[coord] < *min)
+			*min = vl[i].vertex[coord]
+	}
+}
+
+float findMin(tVertex)
+
+void convertToScreenCoord(tVertexList *vl) {
+	int i;
+	/* Passo 1: Mins, maxs, centros e difs */
+	float maxY, maxX, cY, cX;
+	findMaxMin(vl, maxX, minX, X);
+	findMaxMin(vl, maxY, minY, Y);
+
+	cX = (maxX + minX) / 2;
+	cY = (maxY + minY) / 2;
+
+	difX = maxX - minX;
+	fixY = maxY - minY;
+
+	/* Passo 2: Fator de escala*/
+	float sclX, sclY, scl;
+	sclX = WIN_WIDTH  / (maxX - minX);
+	sclY = WIN_HEIGHT / (maxY - minY);
+
+	scl = sclX < sclY ? sclX : sclY;
+
+	/* Passos 3 a 5: Ajustar escala e posicao na tela */
+	for(i = 0; i < vl->size; i++) {
+		vl->vertex[i][X] = ((vl->vertex[i][X] - cX) * scl) + WIN_WIDTH;
+		vl->vertex[i][Y] = ((vl->vertex[i][Y] - cY) * scl) + WIN_HEIGHT;
+	}
 }
