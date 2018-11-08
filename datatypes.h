@@ -12,6 +12,7 @@
 
 #define MAX_FILE 30
 
+#define tVertex
 typedef struct sVertex {
 	float pos[DIMENSION];
 } tVertex;
