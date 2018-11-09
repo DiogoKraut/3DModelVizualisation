@@ -10,8 +10,8 @@
 #define Y 1
 #define Z 2
 
-#define MAX_FACES  500
-#define MAX_VERTEX 500
+#define MAX_FACES 69451 + 500
+#define MAX_VERTEX 34834 + 500
 
 #define MAX_FILE 50
 #define MAX_LINE 50
@@ -20,13 +20,13 @@ typedef float tVertex[DIMENSION];
 typedef int tFace[FACE_SIZE];
 
 typedef struct sVertexList {
-	tVertex *vertex;
-	int size, max_size;
+	tVertex vertex[MAX_VERTEX];
+	int size;
 } tVertexList;
 
 typedef struct sFaceList {
-	tFace *face;
-	int size, max_size;
+	tFace face[MAX_FACES];
+	int size;
 } tFaceList;
 
 #endif
