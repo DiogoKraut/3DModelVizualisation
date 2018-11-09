@@ -10,7 +10,8 @@
 #define Y 1
 #define Z 2
 
-#define LIST_SIZE 500
+#define MAX_FACES  500
+#define MAX_VERTEX 500
 
 #define MAX_FILE 50
 #define MAX_LINE 50

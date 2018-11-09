@@ -12,15 +12,6 @@ void readOBJ(FILE *in, tVertexList *vl, tFaceList *fl) {
 	char s[MAX_LINE];
 	char *tok;
 	while(fgets(s, MAX_LINE, in)) {
-		/* Mais espaco para listas, se nescessario */
-		if(vl->size == vl->max_size) {
-			vl->max_size *= 2;
-			vl->vertex = realloc(vl->vertex, sizeof(tVertex) * vl->max_size);
-		}
-		if(fl->size == fl->max_size) {
-			fl->max_size *= 2;
-			fl->face = realloc(fl->face, sizeof(tFace) * fl->max_size);
-		}
 		/* Verifica se a substring eh vertice ou face */
 		switch(*s) {
 			/* Vertice */
@@ -45,4 +36,12 @@ void readOBJ(FILE *in, tVertexList *vl, tFaceList *fl) {
 				break;
 		}
 	}
+}
+
+void init_faceList(tFaceList *fl) {
+	int i, j;
+	for(i = 0; i < MAX_FACES; i++)
+		for(j = 0; j < FACE_SIZE; j++) {
+			fl->face[i][j] = -1;
+		}
 }

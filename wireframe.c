@@ -27,15 +27,8 @@ int main(int argc, char const *argv[]) {
 		fprintf(stderr, "Falha ao alocar espaco para OBJ\n");
 		exit(EXIT_FAILURE);
 	}
-	vl->vertex = malloc(sizeof(tVertex) * LIST_SIZE);
-	fl->face   = malloc(sizeof(tFace) * LIST_SIZE);
-	if(!vl->vertex || !fl->face) {
-		fprintf(stderr, "Falha ao alocar espaco para OBJ\n");
-		exit(EXIT_FAILURE);
-	}
-
-	vl->max_size = fl->max_size = LIST_SIZE;
 	vl->size = fl->size = 0;
+	init_faceList(fl);
 
 	FILE *in = fopen(file_path, "r");
 	readOBJ(in, vl, fl);
@@ -50,14 +43,18 @@ int main(int argc, char const *argv[]) {
 
 	SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO);
 
-	SDL_Window *win;
-	SDL_Renderer *renderer;
-	SDL_CreateWindowAndRenderer(
-		WIN_HEIGHT,
+	SDL_Window *win = SDL_CreateWindow(
+		"Main window",
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
 		WIN_WIDTH,
-		SDL_WINDOW_INPUT_GRABBED,
-		&win,
-		&renderer
+		WIN_HEIGHT,
+		SDL_WINDOW_INPUT_GRABBED
+	);
+	SDL_Renderer *renderer = SDL_CreateRenderer(
+		win,
+		-1,
+		SDL_RENDERER_ACCELERATED
 	);
 
 	for(i = 0; i < fl->size; i++) {
@@ -71,7 +68,8 @@ int main(int argc, char const *argv[]) {
 						  );
 		}
 	}
-
+	while(1);
+	SDL_DestroyWindow(win);
 	free(vl->vertex);
 	free(fl->face);
 	free(vl);
