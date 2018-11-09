@@ -11,7 +11,6 @@
 #include "perspect.h"
 #include "graphics.h"
 
-
 void convertToPerspective(int *camera, tVertexList *vl) {
 	int i;
 	float aux;
@@ -19,7 +18,7 @@ void convertToPerspective(int *camera, tVertexList *vl) {
 		aux = vl->vertex[i][Z] + camera[Z]; // (Zv + Zc)
 		vl->vertex[i][X] = camera[X] + camera[Z] * ((vl->vertex[i][X] - camera[X]) / aux);
 		vl->vertex[i][Y] = camera[Y] + camera[Z] * ((vl->vertex[i][Y] - camera[Y]) / aux);
-	}	
+	}
 }
 
 void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
@@ -27,27 +26,22 @@ void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
 	*max = *min = 0;
 
 	for(i = 0; i < vl->size; i++) {
-		if(vl[i].vertex[coord] > *max)
-			*max = vl[i].vertex[coord]
-		else if(vl[i].vertex[coord] < *min)
-			*min = vl[i].vertex[coord]
+		if(vl->vertex[i][coord] > *max)
+			*max = vl->vertex[i][coord];
+		else if(vl->vertex[i][coord] < *min)
+			*min = vl->vertex[i][coord];
 	}
 }
-
-float findMin(tVertex)
 
 void convertToScreenCoord(tVertexList *vl) {
 	int i;
 	/* Passo 1: Mins, maxs, centros e difs */
-	float maxY, maxX, cY, cX;
-	findMaxMin(vl, maxX, minX, X);
-	findMaxMin(vl, maxY, minY, Y);
+	float maxY, maxX, minY, minX, cY, cX;
+	findMaxMin(vl, &maxX, &minX, X);
+	findMaxMin(vl, &maxY, &minY, Y);
 
 	cX = (maxX + minX) / 2;
 	cY = (maxY + minY) / 2;
-
-	difX = maxX - minX;
-	fixY = maxY - minY;
 
 	/* Passo 2: Fator de escala*/
 	float sclX, sclY, scl;

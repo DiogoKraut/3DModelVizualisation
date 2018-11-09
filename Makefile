@@ -1,5 +1,5 @@
 TARGET = wireframe
-LIBS = -lm
+LIBS = -lm -lSDL2 -lSDL2_gfx
 CC = gcc
 CFLAGS = -Wall -g
 
