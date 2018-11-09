@@ -48,7 +48,7 @@ void convertToScreenCoord(tVertexList *vl) {
 	sclX = WIN_WIDTH  / (maxX - minX);
 	sclY = WIN_HEIGHT / (maxY - minY);
 
-	scl = sclX < sclY ? sclX : sclY;
+	scl = sclX > sclY ? sclX : sclY;
 
 	/* Passos 3 a 5: Ajustar escala e posicao na tela */
 	for(i = 0; i < vl->size; i++) {

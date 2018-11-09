@@ -19,8 +19,6 @@ int main(int argc, char const *argv[]) {
 	else
 		strcpy(file_path, argv[argc-1]);
 
-	int i, j;
-
 	tVertexList *vl = malloc(sizeof(tVertexList));
 	tFaceList   *fl = malloc(sizeof(tFaceList));
 	if(!vl || !fl) {
@@ -41,7 +39,10 @@ int main(int argc, char const *argv[]) {
 
 	convertToPerspective(camera, vl);
 
-	SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO);
+	if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
+		fprintf(stderr, "Error em SDL_Init: %s", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
 
 	SDL_Window *win = SDL_CreateWindow(
 		"Main window",
@@ -49,27 +50,44 @@ int main(int argc, char const *argv[]) {
 		SDL_WINDOWPOS_CENTERED,
 		WIN_WIDTH,
 		WIN_HEIGHT,
-		SDL_WINDOW_INPUT_GRABBED
+		SDL_WINDOW_INPUT_GRABBED | SDL_WINDOW_OPENGL
 	);
+	if(win == NULL) {
+		printf ("Erro em SDL_CreateWindow: %s", SDL_GetError());
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+
 	SDL_Renderer *renderer = SDL_CreateRenderer(
 		win,
 		-1,
 		SDL_RENDERER_ACCELERATED
 	);
+	if(renderer == NULL) {
+		SDL_DestroyWindow(win);
+		printf ("Erro em SDL_CreateRenderer: %s", SDL_GetError());
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+}
+	SDL_Event e;
 
-	for(i = 0; i < fl->size; i++) {
-		for(j = 0; fl->face[i][j+1] != -1; j++) {
-			lineRGBA(renderer,
-				       vl->vertex[fl->face[i][j]]   [X], // x1
-			         vl->vertex[fl->face[i][j]]   [Y], // y1
-							 vl->vertex[fl->face[i][j+1]] [X], // x2
-							 vl->vertex[fl->face[i][j+1]] [Y], // y2
-							 0, 0, 0, 100
-						  );
-		}
+	int quit = 0;
+	while(!quit)
+	{
+	  if(SDL_PollEvent(&e)) {
+	     if(e.type == SDL_QUIT)
+	        quit = 1;
+	  }
+	  SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, 0xFF);
+	  SDL_RenderClear(renderer);
+		drawEdges(renderer, vl, fl);
+	  SDL_RenderPresent(renderer);
+	  SDL_Delay(2000);
+		quit = 1;
 	}
-	while(1);
+
 	SDL_DestroyWindow(win);
+	SDL_Quit();
 	free(vl->vertex);
 	free(fl->face);
 	free(vl);

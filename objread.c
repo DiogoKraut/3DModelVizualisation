@@ -26,11 +26,13 @@ void readOBJ(FILE *in, tVertexList *vl, tFaceList *fl) {
 				break;
 			/* Face */
 			case 'f':
-				strtok(s, " "); // Seleciona 'f'
+				tok = strtok(s, " "); // Seleciona 'f'
 				/* Ler os vertices da face */
-				for(i = 0; strtok(NULL, " ") != NULL; i++) {
-					aux = atoi(s) - 1; // Lista de vertices comeca em 1
-					fl->face[fl->size][i] = aux;
+				tok = strtok(NULL, " ");
+				for(i = 0; tok != NULL; i++) {
+					aux = atoi(tok); // Lista de vertices comeca em 0, mas no arquivo em 1
+					fl->face[fl->size][i] = aux - 1;
+					tok = strtok(NULL, " ");
 				}
 				fl->size++;
 				break;
