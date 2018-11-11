@@ -72,10 +72,13 @@ int main(int argc, char const *argv[]) {
 }
 	SDL_Event e;
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
 
 	int quit = 0;
 	while(!quit) {
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+		SDL_RenderClear(renderer);
+		drawEdges(renderer, vl, fl);
+		SDL_RenderPresent(renderer);
 	  if(SDL_PollEvent(&e)) {
 			if(e.type == SDL_QUIT)
 				quit = 1;
@@ -83,30 +86,40 @@ int main(int argc, char const *argv[]) {
 				switch(e.key.keysym.sym) {
 					case SDLK_UP:
 						camera[Z]++;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
 						break;
 					case SDLK_DOWN:
 						camera[Z]--;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
 						break;
 					case SDLK_RIGHT:
 						camera[X]++;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
 						break;
 					case SDLK_LEFT:
 						camera[X]--;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
 						break;
 					case SDLK_SPACE:
 						camera[Y]++;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
 						break;
 					case SDLK_LCTRL:
 						camera[Y]--;
+						convertToPerspective(camera, vl);
+						convertToScreenCoord(vl);
+						break;
+						case SDLK_q:
+							quit = 1;
 						break;
 				}
-				convertToPerspective(camera, vl);
-				convertToScreenCoord(vl);
 			}
 		}
-		SDL_RenderClear(renderer);
-		drawEdges(renderer, vl, fl);
-		SDL_RenderPresent(renderer);
 	}
 
 	SDL_DestroyWindow(win);
