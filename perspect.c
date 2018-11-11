@@ -11,6 +11,7 @@
 #include "perspect.h"
 #include "graphics.h"
 
+/* Perspectiva fraca. Salva o resultado em outra lista de vertices */
 void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2) {
 	int i;
 	float aux;
@@ -22,6 +23,7 @@ void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2) {
 	vl2->size = i;
 }
 
+/* Encontra o maximo e minimo da coordenada 'coord' em uma lista de vertices */
 void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
 	int i;
 	*max = *min = 0;
@@ -34,6 +36,7 @@ void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
 	}
 }
 
+/* Coverta as coordenadas cartesianas dos vertices para coordenadas de tela */
 void convertToScreenCoord(tVertexList *vl) {
 	int i;
 	/* Passo 1: Mins, maxs, centros e difs */
