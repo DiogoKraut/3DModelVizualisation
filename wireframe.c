@@ -33,11 +33,12 @@ int main(int argc, char const *argv[]) {
 	fclose(in);
 
 	int camera[DIMENSION];
-	camera[X] = 0;
+	camera[X] = 5;
 	camera[Y] = 0;
-	camera[Z] = 10;
+	camera[Z] = 2;
 
 	convertToPerspective(camera, vl);
+	convertToScreenCoord(vl);
 
 	if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Error em SDL_Init: %s", SDL_GetError());
@@ -46,8 +47,8 @@ int main(int argc, char const *argv[]) {
 
 	SDL_Window *win = SDL_CreateWindow(
 		"Main window",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
+		0,
+		0,
 		WIN_WIDTH,
 		WIN_HEIGHT,
 		SDL_WINDOW_INPUT_GRABBED | SDL_WINDOW_OPENGL
@@ -71,25 +72,45 @@ int main(int argc, char const *argv[]) {
 }
 	SDL_Event e;
 
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+
 	int quit = 0;
-	while(!quit)
-	{
+	while(!quit) {
 	  if(SDL_PollEvent(&e)) {
-	     if(e.type == SDL_QUIT)
-	        quit = 1;
-	  }
-	  SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, 0xFF);
-	  SDL_RenderClear(renderer);
+			if(e.type == SDL_QUIT)
+				quit = 1;
+			else if(e.type == SDL_KEYDOWN) {
+				switch(e.key.keysym.sym) {
+					case SDLK_UP:
+						camera[Z]++;
+						break;
+					case SDLK_DOWN:
+						camera[Z]--;
+						break;
+					case SDLK_RIGHT:
+						camera[X]++;
+						break;
+					case SDLK_LEFT:
+						camera[X]--;
+						break;
+					case SDLK_SPACE:
+						camera[Y]++;
+						break;
+					case SDLK_LCTRL:
+						camera[Y]--;
+						break;
+				}
+				convertToPerspective(camera, vl);
+				convertToScreenCoord(vl);
+			}
+		}
+		SDL_RenderClear(renderer);
 		drawEdges(renderer, vl, fl);
-	  SDL_RenderPresent(renderer);
-	  SDL_Delay(2000);
-		quit = 1;
+		SDL_RenderPresent(renderer);
 	}
 
 	SDL_DestroyWindow(win);
 	SDL_Quit();
-	free(vl->vertex);
-	free(fl->face);
 	free(vl);
 	free(fl);
 	return 0;
