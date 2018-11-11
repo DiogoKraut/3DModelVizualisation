@@ -6,6 +6,6 @@
 
 #include "datatypes.h"
 
-void convertToPerspective(int *camera, tVertexList *vl);
+void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2);
 void convertToScreenCoord(tVertexList *vl);
 void findMaxMin(tVertexList *vl, float *max, float *min, int coord);

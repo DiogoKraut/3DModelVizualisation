@@ -19,26 +19,27 @@ int main(int argc, char const *argv[]) {
 	else
 		strcpy(file_path, argv[argc-1]);
 
-	tVertexList *vl = malloc(sizeof(tVertexList));
+	tVertexList *vl1 = malloc(sizeof(tVertexList));
+	tVertexList *vl2 = malloc(sizeof(tVertexList));
 	tFaceList   *fl = malloc(sizeof(tFaceList));
-	if(!vl || !fl) {
+	if(!vl1 || !vl2 || !fl) {
 		fprintf(stderr, "Falha ao alocar espaco para OBJ\n");
 		exit(EXIT_FAILURE);
 	}
-	vl->size = fl->size = 0;
+	vl1->size = fl->size = 0;
 	init_faceList(fl);
 
 	FILE *in = fopen(file_path, "r");
-	readOBJ(in, vl, fl);
+	readOBJ(in, vl1, fl);
 	fclose(in);
 
-	int camera[DIMENSION];
-	camera[X] = 5;
+	float camera[DIMENSION];
+	camera[X] = 0;
 	camera[Y] = 0;
 	camera[Z] = 2;
 
-	convertToPerspective(camera, vl);
-	convertToScreenCoord(vl);
+	convertToPerspective(camera, vl1, vl2);
+	convertToScreenCoord(vl2);
 
 	if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Error em SDL_Init: %s", SDL_GetError());
@@ -46,24 +47,15 @@ int main(int argc, char const *argv[]) {
 	}
 
 	SDL_Window *win = SDL_CreateWindow(
-		"Main window",
-		0,
-		0,
-		WIN_WIDTH,
-		WIN_HEIGHT,
-		SDL_WINDOW_INPUT_GRABBED | SDL_WINDOW_OPENGL
-	);
+		"Main window",	0, 0,	WIN_WIDTH, WIN_HEIGHT,
+		SDL_WINDOW_INPUT_GRABBED | SDL_WINDOW_OPENGL);
 	if(win == NULL) {
 		printf ("Erro em SDL_CreateWindow: %s", SDL_GetError());
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	SDL_Renderer *renderer = SDL_CreateRenderer(
-		win,
-		-1,
-		SDL_RENDERER_ACCELERATED
-	);
+	SDL_Renderer *renderer = SDL_CreateRenderer(win, -1,	SDL_RENDERER_ACCELERATED);
 	if(renderer == NULL) {
 		SDL_DestroyWindow(win);
 		printf ("Erro em SDL_CreateRenderer: %s", SDL_GetError());
@@ -77,44 +69,44 @@ int main(int argc, char const *argv[]) {
 	while(!quit) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
 		SDL_RenderClear(renderer);
-		drawEdges(renderer, vl, fl);
+		drawEdges(renderer, vl2, fl);
 		SDL_RenderPresent(renderer);
 	  if(SDL_PollEvent(&e)) {
 			if(e.type == SDL_QUIT)
 				quit = 1;
 			else if(e.type == SDL_KEYDOWN) {
 				switch(e.key.keysym.sym) {
-					case SDLK_UP:
-						camera[Z]++;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
-						break;
 					case SDLK_DOWN:
-						camera[Z]--;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
+						camera[Z] += 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
+						break;
+					case SDLK_UP:
+						camera[Z] -= 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
 						break;
 					case SDLK_RIGHT:
-						camera[X]++;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
+						camera[X] += 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
 						break;
 					case SDLK_LEFT:
-						camera[X]--;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
+						camera[X] -= 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
 						break;
 					case SDLK_SPACE:
-						camera[Y]++;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
+						camera[Y] += 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
 						break;
 					case SDLK_LCTRL:
-						camera[Y]--;
-						convertToPerspective(camera, vl);
-						convertToScreenCoord(vl);
+						camera[Y] -= 0.2;
+						convertToPerspective(camera, vl1, vl2);
+						convertToScreenCoord(vl2);
 						break;
-						case SDLK_q:
+						case SDLK_ESCAPE:
 							quit = 1;
 						break;
 				}
@@ -124,7 +116,7 @@ int main(int argc, char const *argv[]) {
 
 	SDL_DestroyWindow(win);
 	SDL_Quit();
-	free(vl);
+	free(vl1);
 	free(fl);
 	return 0;
 }

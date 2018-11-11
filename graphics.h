@@ -5,7 +5,7 @@
 
 #include "datatypes.h"
 
-#define WIN_WIDTH 400
-#define WIN_HEIGHT 300
+#define WIN_WIDTH 800
+#define WIN_HEIGHT 600
 
 void drawEdges(SDL_Renderer *renderer, tVertexList *vl, tFaceList *fl);

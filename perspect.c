@@ -11,14 +11,15 @@
 #include "perspect.h"
 #include "graphics.h"
 
-void convertToPerspective(int *camera, tVertexList *vl) {
+void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2) {
 	int i;
 	float aux;
-	for(i = 0; i < vl->size; i++) {
-		aux = vl->vertex[i][Z] + camera[Z]; // (Zv + Zc)
-		vl->vertex[i][X] = camera[X] + camera[Z] * ((vl->vertex[i][X] - camera[X]) / aux);
-		vl->vertex[i][Y] = camera[Y] + camera[Z] * ((vl->vertex[i][Y] - camera[Y]) / aux);
+	for(i = 0; i < vl1->size; i++) {
+		aux = vl1->vertex[i][Z] + camera[Z]; // (Zv + Zc)
+		vl2->vertex[i][X] = camera[X] + camera[Z] * ((vl1->vertex[i][X] - camera[X]) / aux);
+		vl2->vertex[i][Y] = camera[Y] + camera[Z] * ((vl1->vertex[i][Y] - camera[Y]) / aux);
 	}
+	vl2->size = i;
 }
 
 void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
@@ -49,7 +50,7 @@ void convertToScreenCoord(tVertexList *vl) {
 	sclY = WIN_HEIGHT / (maxY - minY);
 
 	scl = sclX < sclY ? sclX : sclY;
-	scl = scl/2;
+
 	/* Passos 3 a 5: Ajustar escala e posicao na tela */
 	for(i = 0; i < vl->size; i++) {
 		vl->vertex[i][X] = ((vl->vertex[i][X] - cX) * scl) + WIN_WIDTH / 2;
