@@ -28,10 +28,10 @@ int main(int argc, char const *argv[]) {
 	char s[MAX_LINE];
 	if(argc == 2) { // Se .obj foi passado em argv
 		FILE *in = fopen(argv[1], "r");
-		while(fgets(s, MAX_LINE, in))
+		while(fgets(s, MAX_LINE, in)) // Ler arqv linha por linha ate o fim
 			readOBJ(s, vl1, fl);
 		fclose(in);
-	} else         // .obj passado por stdin
+	} else          // .obj passado por stdin
 		while(fgets(s, MAX_LINE, stdin))
 			readOBJ(s, vl1, fl);
 
@@ -70,17 +70,22 @@ int main(int argc, char const *argv[]) {
 
 	SDL_Event e;  // Strutura para tratar eventos
 	int quit = 0;
+	int mouse_x1, mouse_x2, mouse_y1, mouse_y2;
+
 	while(!quit) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100); // Background
 		SDL_RenderClear(renderer);
 		drawEdges(renderer, vl2, fl); // Desenha arestas do objeto
 		SDL_RenderPresent(renderer);  // Refresh
+
+		SDL_GetMouseState(&mouse_x1, &mouse_y1);
+
 		/* Verificacao de eventos */
 	  if(SDL_PollEvent(&e)) {
 			if(e.type == SDL_QUIT) // Sair
 				quit = 1;
-			else if(e.type == SDL_KEYDOWN) { // Tecla pressionada
-				switch(e.key.keysym.sym) {     // Move a camera de acordo com a tecla
+			else if(e.type == SDL_KEYDOWN) // Tecla pressionada
+				switch(e.key.keysym.sym) {   // Move a camera de acordo com a tecla
 					case SDLK_UP:
 						camera[Y] += 1;
 						convertToPerspective(camera, vl1, vl2);
@@ -105,6 +110,14 @@ int main(int argc, char const *argv[]) {
 							quit = 1;
 						break;
 				}
+			else if((e.type == SDL_MOUSEMOTION) && (SDL_GetMouseState(&mouse_x2, &mouse_y2) & SDL_BUTTON_LMASK)) {
+				/* SDL_GetMouseState retorna um bit mask do estado do botao e altera os paremetros *
+				 * para a nova posicao do mouse. IF: Se moveu o mouse e MOUSE1 pressionado, move a *
+				 * camera de acordo com a nova posicao do mouse em relacao a posicao antiga        */
+				camera[X] += mouse_x1 - mouse_x2;
+				camera[Y] += mouse_y1 - mouse_y2;
+				convertToPerspective(camera, vl1, vl2);
+				convertToScreenCoord(vl2);
 			}
 		}
 	}
