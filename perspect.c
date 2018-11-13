@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
@@ -12,9 +13,9 @@
 #include "graphics.h"
 
 /* Perspectiva fraca. Salva o resultado em outra lista de vertices */
-void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2) {
+void convertToPerspective(double *camera, tVertexList *vl1, tVertexList *vl2) {
 	int i;
-	float aux;
+	double aux;
 	for(i = 0; i < vl1->size; i++) {
 		aux = vl1->vertex[i][Z] + camera[Z]; // (Zv + Zc)
 		vl2->vertex[i][X] = camera[X] + camera[Z] * ((vl1->vertex[i][X] - camera[X]) / aux);
@@ -24,7 +25,7 @@ void convertToPerspective(float *camera, tVertexList *vl1, tVertexList *vl2) {
 }
 
 /* Encontra o maximo e minimo da coordenada 'coord' em uma lista de vertices */
-void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
+void findMaxMin(tVertexList *vl, double *max, double *min, int coord) {
 	int i;
 	*max = *min = 0;
 
@@ -40,7 +41,7 @@ void findMaxMin(tVertexList *vl, float *max, float *min, int coord) {
 void convertToScreenCoord(tVertexList *vl) {
 	int i;
 	/* Passo 1: Mins, maxs, centros e difs */
-	float maxY, maxX, minY, minX, cY, cX;
+	double maxY, maxX, minY, minX, cY, cX;
 	findMaxMin(vl, &maxX, &minX, X);
 	findMaxMin(vl, &maxY, &minY, Y);
 
@@ -48,7 +49,7 @@ void convertToScreenCoord(tVertexList *vl) {
 	cY = (maxY + minY) / 2;
 
 	/* Passo 2: Fator de escala*/
-	float sclX, sclY, scl;
+	double sclX, sclY, scl;
 	sclX = WIN_WIDTH  / (maxX - minX);
 	sclY = WIN_HEIGHT / (maxY - minY);
 
@@ -59,4 +60,13 @@ void convertToScreenCoord(tVertexList *vl) {
 		vl->vertex[i][X] = ((vl->vertex[i][X] - cX) * scl) + WIN_WIDTH / 2;
 		vl->vertex[i][Y] = ((vl->vertex[i][Y] - cY) * scl) + WIN_HEIGHT / 2;
 	}
+}
+
+void cameraToCartesian(double *x, double*y, double *theta, double dist) {
+	double t;
+	/* Converter theta para radianos */
+	t = (double) *theta * M_PI / 180.0;
+	/* Converter para coordenadas cartesianas */
+	x = dist * cos(t);
+	y = dist * sin(t);
 }

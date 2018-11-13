@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
@@ -36,12 +37,18 @@ int main(int argc, char const *argv[]) {
 			readOBJ(s, vl1, fl);
 
 	/* Inicializa camera */
-	float camera[DIMENSION];
+	// Camera em coords esfericas (graus) 
+	double theta = 0.0;   // angulo em zx
+	double phi   = 0.0;   // angulo em xy
+	double dist  = 100.0;
+	// Camera em coordenadas cartesianas
+	double camera[DIMENSION];
 	camera[X] = 0;
 	camera[Y] = 0;
-	camera[Z] = 100;
+	camera[Z] = 0;
 
 	/* Calculo da projecao inicial */
+	cameraToCartesian(camera[X], camera[Y], &phi, dist);
 	convertToPerspective(camera, vl1, vl2);
 	convertToScreenCoord(vl2);
 
@@ -87,22 +94,26 @@ int main(int argc, char const *argv[]) {
 			else if(e.type == SDL_KEYDOWN) // Tecla pressionada
 				switch(e.key.keysym.sym) {   // Move a camera de acordo com a tecla
 					case SDLK_UP:
-						camera[Y] += 1;
+						theta += 1;
+						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_DOWN:
-						camera[Y] -= 1;
+						theta -= 1;
+						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_RIGHT:
-						camera[X] += 1;
+						phi += 1;;
+						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_LEFT:
-						camera[X] -= 1;
+						phi -= 1;
+						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
