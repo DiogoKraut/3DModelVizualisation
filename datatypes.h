@@ -10,8 +10,8 @@
 #define Y 1
 #define Z 2
 
-#define MAX_FACES 100
-#define MAX_VERTEX 100
+#define MAX_FACES 65536   // 2^16
+#define MAX_VERTEX 131072 // 2^17
 
 #define MAX_LINE 50
 

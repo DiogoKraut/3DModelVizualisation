@@ -81,7 +81,7 @@ int main(int argc, char const *argv[]) {
 		SDL_GetMouseState(&mouse_x1, &mouse_y1);
 
 		/* Verificacao de eventos */
-	  if(SDL_PollEvent(&e)) {
+	  while(SDL_PollEvent(&e) != 0) {
 			if(e.type == SDL_QUIT) // Sair
 				quit = 1;
 			else if(e.type == SDL_KEYDOWN) // Tecla pressionada

@@ -10,7 +10,8 @@
 /* Recebe uma linha do arquivo .obj e a processa de acordo */
 void readOBJ(char *s, tVertexList *vl, tFaceList *fl) {
 	int i, aux;
-	char *tok;
+	char *tok, *toktok;
+	char *stoktok;
 
 	tok = strtok(s, " ");
 	/* Verifica se eh vertice ou face */
@@ -29,7 +30,8 @@ void readOBJ(char *s, tVertexList *vl, tFaceList *fl) {
 			/* Ler os vertices da face */
 			tok = strtok(NULL, " ");
 			for(i = 0; tok != NULL; i++) {
-				aux = atoi(tok);
+				toktok = strtok_r(tok, "/", &stoktok);
+				aux = atoi(toktok);
 				/* Listas num arv .obj comecam em 1, ajustamos para comecar em 0 */
 				fl->face[fl->size][i] = aux - 1;
 				tok = strtok(NULL, " ");
