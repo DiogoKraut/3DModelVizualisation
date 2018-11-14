@@ -6,7 +6,7 @@
 
 #include "datatypes.h"
 
-void convertToPerspective(double *camera, tVertexList *vl1, tVertexList *vl2);
-void convertToScreenCoord(tVertexList *vl);
-void findMaxMin(tVertexList *vl, double *max, double *min, int coord);
-void cameraToCartesian(double *camera, double *theta, double *phi, double dist);
+void convertToPerspective(tCamera *camera, t3dVertexList *vl1, t2dVertexList *vl2);
+void convertToScreenCoord(t2dVertexList *vl);
+void findMaxMin(t2dVertexList *vl, double *max, double *min, int coord);
+void cameraToCartesian(tCamera *camera, double *theta, double *phi, double dist);

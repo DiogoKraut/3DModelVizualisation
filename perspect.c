@@ -12,20 +12,29 @@
 #include "perspect.h"
 #include "graphics.h"
 
-/* Perspectiva fraca. Salva o resultado em outra lista de vertices */
-void convertToPerspective(double *camera, tVertexList *vl1, tVertexList *vl2) {
+/* https://en.wikipedia.org/wiki/3D_projection#Weak_perspective_projection *
+ * Algoritimo com base na secao Perspective Projection                     */
+void convertToPerspective(tCamera *camera, t3dVertexList *vl1, t2dVertexList *vl2) {
 	int i;
 	double aux;
-	for(i = 0; i < vl1->size; i++) {
-		aux = vl1->vertex[i][Z] + camera[Z]; // (Zv + Zc)
-		vl2->vertex[i][X] = camera[X] + camera[Z] * ((vl1->vertex[i][X] - camera[X]) / aux);
-		vl2->vertex[i][Y] = camera[Y] + camera[Z] * ((vl1->vertex[i][Y] - camera[Y]) / aux);
+	t3dVertex d; // Coordenada do vertice em relacao a camera
+	for(i = 0; i < vl1->size; i++) { // Percorre lista de vertices
+		/* Calcular d */
+		d[X] = vl1->vertex[i][X] - camera->pos[X];
+		d[Y] = vl1->vertex[i][Y] - camera->pos[Y];
+		d[Z] = vl1->vertex[i][Z] - camera->pos[Z];
+
+		/* Calcular vertice em perspectiva */
+		aux = camera->surface[Z] / d[Z]; // Ez / dz onde Ez == camera.surface[Z]
+
+		vl2->vertex[i][X] = aux * d[X];
+		vl2->vertex[i][Y] = aux * d[Y];
 	}
 	vl2->size = i;
 }
 
 /* Encontra o maximo e minimo da coordenada 'coord' em uma lista de vertices */
-void findMaxMin(tVertexList *vl, double *max, double *min, int coord) {
+void findMaxMin(t2dVertexList *vl, double *max, double *min, int coord) {
 	int i;
 	*max = *min = 0;
 
@@ -38,7 +47,7 @@ void findMaxMin(tVertexList *vl, double *max, double *min, int coord) {
 }
 
 /* Coverta as coordenadas cartesianas dos vertices para coordenadas de tela */
-void convertToScreenCoord(tVertexList *vl) {
+void convertToScreenCoord(t2dVertexList *vl) {
 	int i;
 	/* Passo 1: Mins, maxs, centros e difs */
 	double maxY, maxX, minY, minX, cY, cX;
@@ -54,6 +63,7 @@ void convertToScreenCoord(tVertexList *vl) {
 	sclY = WIN_HEIGHT / (maxY - minY);
 
 	scl = sclX < sclY ? sclX : sclY;
+	scl *= 0.8;
 	// scl = scl/2;
 	/* Passos 3 a 5: Ajustar escala e posicao na tela */
 	for(i = 0; i < vl->size; i++) {
@@ -62,11 +72,13 @@ void convertToScreenCoord(tVertexList *vl) {
 	}
 }
 
-void cameraToCartesian(double *x, double*y, double *theta, double dist) {
-	double t;
+void cameraToCartesian(tCamera *camera, double *theta, double *phi, double r) {
+	long double t, p;
 	/* Converter theta para radianos */
-	t = (double) *theta * M_PI / 180.0;
+	t = *theta * (M_PI / 180.0);
+	p = *phi * (M_PI / 180.0);
 	/* Converter para coordenadas cartesianas */
-	x = dist * cos(t);
-	y = dist * sin(t);
+	camera->pos[X] = r * sin(t) * sin(p);
+	camera->pos[Y] = r * cos(t);
+	camera->pos[Z] = r * sin(t) * cos(p);
 }

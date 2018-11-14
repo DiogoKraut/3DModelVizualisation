@@ -15,8 +15,8 @@
 
 int main(int argc, char const *argv[]) {
 	/* Inicializacao das estruturas que armazenarao um .obj */
-	tVertexList *vl1 = malloc(sizeof(tVertexList));
-	tVertexList *vl2 = malloc(sizeof(tVertexList));
+	t3dVertexList *vl1 = malloc(sizeof(t3dVertexList));
+	t2dVertexList *vl2 = malloc(sizeof(t2dVertexList));
 	tFaceList   *fl = malloc(sizeof(tFaceList));
 	if(!vl1 || !vl2 || !fl) {
 		fprintf(stderr, "Falha ao alocar espaco para OBJ\n");
@@ -37,18 +37,19 @@ int main(int argc, char const *argv[]) {
 			readOBJ(s, vl1, fl);
 
 	/* Inicializa camera */
-	// Camera em coords esfericas (graus) 
-	double theta = 0.0;   // angulo em zx
-	double phi   = 0.0;   // angulo em xy
+	tCamera *camera = malloc(sizeof(tCamera));
+	camera->surface[X] = 0;
+	camera->surface[Y] = 0;
+	camera->surface[Z] = 10;
+	// Camera em coords esfericas (graus)
+	double theta = 90;   // angulo a partir do eixo y
+	double phi   = 0.0;   // angulo a partir do eixo z
 	double dist  = 100.0;
+
 	// Camera em coordenadas cartesianas
-	double camera[DIMENSION];
-	camera[X] = 0;
-	camera[Y] = 0;
-	camera[Z] = 0;
+	cameraToCartesian(camera, &theta, &phi, dist);
 
 	/* Calculo da projecao inicial */
-	cameraToCartesian(camera[X], camera[Y], &phi, dist);
 	convertToPerspective(camera, vl1, vl2);
 	convertToScreenCoord(vl2);
 
@@ -94,25 +95,25 @@ int main(int argc, char const *argv[]) {
 			else if(e.type == SDL_KEYDOWN) // Tecla pressionada
 				switch(e.key.keysym.sym) {   // Move a camera de acordo com a tecla
 					case SDLK_UP:
-						theta += 1;
+						theta += 5;
 						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_DOWN:
-						theta -= 1;
+						theta -= 5;
 						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_RIGHT:
-						phi += 1;;
+						phi += 5;
 						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
 						break;
 					case SDLK_LEFT:
-						phi -= 1;
+						phi -= 5;
 						cameraToCartesian(camera, &theta, &phi, dist);
 						convertToPerspective(camera, vl1, vl2);
 						convertToScreenCoord(vl2);
@@ -125,8 +126,8 @@ int main(int argc, char const *argv[]) {
 				/* SDL_GetMouseState retorna um bit mask do estado do botao e altera os paremetros *
 				 * para a nova posicao do mouse. IF: Se moveu o mouse e MOUSE1 pressionado, move a *
 				 * camera de acordo com a nova posicao do mouse em relacao a posicao antiga        */
-				camera[X] += mouse_x1 - mouse_x2;
-				camera[Y] += mouse_y1 - mouse_y2;
+				theta += mouse_x1 - mouse_x2;
+				phi += mouse_y1 - mouse_y2;
 				convertToPerspective(camera, vl1, vl2);
 				convertToScreenCoord(vl2);
 			}

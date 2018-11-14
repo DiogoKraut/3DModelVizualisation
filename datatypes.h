@@ -15,13 +15,24 @@
 
 #define MAX_LINE 50
 
-typedef float tVertex[DIMENSION];
+typedef double t3dVertex[DIMENSION];
+typedef double t2dVertex[DIMENSION-1];
 typedef int tFace[FACE_SIZE];
 
-typedef struct sVertexList {
-	tVertex vertex[MAX_VERTEX];
+typedef struct sCamera {
+	t3dVertex pos;
+	t3dVertex surface; // Superficie onde sera feita a projecao em relacao a camera
+} tCamera;
+
+typedef struct s3dVertexList {
+	t3dVertex vertex[MAX_VERTEX];
 	int size;
-} tVertexList;
+} t3dVertexList;
+
+typedef struct s2dVertexList {
+	t2dVertex vertex[MAX_VERTEX];
+	int size;
+} t2dVertexList;
 
 typedef struct sFaceList {
 	tFace face[MAX_FACES];

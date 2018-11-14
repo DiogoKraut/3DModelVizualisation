@@ -2,5 +2,5 @@
 
 #define MAX_READ_SIZE 200
 
-void readOBJ(char *s, tVertexList *vl, tFaceList *fl);
+void readOBJ(char *s, t3dVertexList *vl, tFaceList *fl);
 void init_faceList(tFaceList *fl);

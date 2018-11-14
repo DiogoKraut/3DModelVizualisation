@@ -8,7 +8,7 @@
 #include "objread.h"
 
 /* Recebe uma linha do arquivo .obj e a processa de acordo */
-void readOBJ(char *s, tVertexList *vl, tFaceList *fl) {
+void readOBJ(char *s, t3dVertexList *vl, tFaceList *fl) {
 	int i, aux;
 	char *tok, *toktok;
 	char *stoktok;
