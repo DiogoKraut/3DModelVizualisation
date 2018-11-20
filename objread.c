@@ -14,6 +14,10 @@ void readOBJ(char *s, t3dVertexList *vl, tFaceList *fl) {
 	char *stoktok;
 
 	tok = strtok(s, " ");
+	/* Nao usamos vetores normais (vn) ou vetores de texturas (vt) */ 
+	if(tok[1] == 'n' || tok[1] == 't')
+		return;
+
 	/* Verifica se eh vertice ou face */
 	switch(*tok) {
 		/* Vertice */

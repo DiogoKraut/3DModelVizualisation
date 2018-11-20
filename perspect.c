@@ -25,7 +25,7 @@ void convertToPerspective(tCamera *camera, t3dVertexList *vl1, t2dVertexList *vl
 		d[Z] = vl1->vertex[i][Z] - camera->pos[Z];
 
 		/* Calcular vertice em perspectiva */
-		aux = camera->surface[Z] / d[Z]; // Ez / dz onde Ez == camera.surface[Z]
+		aux = camera->surface[Z] / d[Z]; // Ez / dz
 
 		vl2->vertex[i][X] = aux * d[X];
 		vl2->vertex[i][Y] = aux * d[Y];
